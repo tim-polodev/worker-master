@@ -1,0 +1,46 @@
+import math
+from typing import Literal
+
+from fastapi import APIRouter, status, Body, Depends, Query
+from pymongo.database import Database
+
+from dependencies import get_db
+from models.tasks import TaskResponse, TaskCreate, TaskListResponse
+from services import TasksService
+
+router = APIRouter()
+
+
+@router.post("/tasks", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
+async def create_task(task: TaskCreate = Body(...), db: Database = Depends(get_db)):
+    tasks_service = TasksService(db)
+    new_task = tasks_service.add_task(task)
+    return new_task
+
+
+@router.get("/tasks", response_model=TaskListResponse)
+async def get_tasks(
+    limit: int = Query(
+        default=10, ge=1, description="Number of tasks to retrieve per page"
+    ),
+    page: int = Query(default=1, ge=1, description="Page number"),
+    sort_by: str = Query(default="created_at", description="Sorted field"),
+    sort_direction: Literal["asc", "desc"] = Query(
+        default="desc", description="Sort direction"
+    ),
+    db: Database = Depends(get_db),
+):
+    skip_val = (page - 1) * limit
+    mongo_sort = -1 if sort_direction == "desc" else 1
+    tasks_service = TasksService(db)
+    insert_result = tasks_service.get_tasks(
+        limit=limit, sort_by=sort_by, sort_direction=mongo_sort, skip=skip_val
+    )
+    total_tasks = insert_result.get("total_tasks", 0)
+    total_pages = math.ceil(total_tasks / limit) if limit > 0 else 0
+    return TaskListResponse(
+        tasks=insert_result.get("tasks", []),
+        page=page,
+        total_pages=total_pages,
+        total_tasks=total_tasks,
+    )
