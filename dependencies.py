@@ -1,5 +1,7 @@
 from pymongo.database import Database
+
 from config.database import db_mongo
+
 
 def get_db() -> Database:
     """Dependency that provides the database instance."""

@@ -1,11 +1,11 @@
 import math
 from typing import Literal
 
-from fastapi import APIRouter, status, Body, Depends, Query
+from fastapi import APIRouter, Body, Depends, Query, status
 from pymongo.database import Database
 
 from dependencies import get_db
-from models.tasks import TaskResponse, TaskCreate, TaskListResponse
+from models.tasks import TaskCreate, TaskListResponse, TaskResponse
 from services import TasksService
 
 router = APIRouter()
@@ -20,14 +20,10 @@ async def create_task(task: TaskCreate = Body(...), db: Database = Depends(get_d
 
 @router.get("/tasks", response_model=TaskListResponse)
 async def get_tasks(
-    limit: int = Query(
-        default=10, ge=1, description="Number of tasks to retrieve per page"
-    ),
+    limit: int = Query(default=10, ge=1, description="Number of tasks to retrieve per page"),
     page: int = Query(default=1, ge=1, description="Page number"),
     sort_by: str = Query(default="created_at", description="Sorted field"),
-    sort_direction: Literal["asc", "desc"] = Query(
-        default="desc", description="Sort direction"
-    ),
+    sort_direction: Literal["asc", "desc"] = Query(default="desc", description="Sort direction"),
     db: Database = Depends(get_db),
 ):
     skip_val = (page - 1) * limit

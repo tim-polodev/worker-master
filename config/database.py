@@ -1,10 +1,9 @@
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
+
 from config import settings
 
-MONGO_URI = (
-    f"mongodb://{settings.MONGO_DB_USER}:{settings.MONGO_DB_PASSWORD}@{settings.MONGO_DB_HOST}:{settings.MONGO_DB_PORT}"
-)
+MONGO_URI = f"mongodb://{settings.MONGO_DB_USER}:{settings.MONGO_DB_PASSWORD}@{settings.MONGO_DB_HOST}:{settings.MONGO_DB_PORT}"  # noqa: E501
 
 
 class DBMongo:

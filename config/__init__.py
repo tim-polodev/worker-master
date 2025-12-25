@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 class Settings(BaseSettings):
     MONGO_DB_HOST: str
     MONGO_DB_PORT: str
@@ -13,10 +14,11 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
-        extra="ignore"  # Ignore extra fields in the .env file not defined here
+        extra="ignore",  # Ignore extra fields in the .env file not defined here
     )
 
     # class Config:
     #     env_file = ".env"
+
 
 settings = Settings()

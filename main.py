@@ -1,8 +1,10 @@
 from dotenv import load_dotenv
 
 load_dotenv()
-from fastapi import FastAPI
 from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+
 from config.database import db_mongo
 from routes import tasks_router
 

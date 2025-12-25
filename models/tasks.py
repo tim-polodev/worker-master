@@ -1,7 +1,7 @@
 from datetime import datetime
-from typing import Optional, Annotated
+from typing import Annotated, Optional
 
-from pydantic import BaseModel, Field, BeforeValidator, ConfigDict, EmailStr
+from pydantic import BaseModel, BeforeValidator, ConfigDict, EmailStr, Field
 
 PyObjectId = Annotated[str, BeforeValidator(str)]
 

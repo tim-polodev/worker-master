@@ -23,11 +23,7 @@ class TasksService:
     def remove_task(self, task):
         pass
 
-    def get_tasks(
-        self, skip=0, limit=100, sort_by: str = "created_at", sort_direction: int = -1
-    ):
-        cursor = (
-            self.collection.find().sort(sort_by, sort_direction).skip(skip).limit(limit)
-        )
+    def get_tasks(self, skip=0, limit=100, sort_by: str = "created_at", sort_direction: int = -1):
+        cursor = self.collection.find().sort(sort_by, sort_direction).skip(skip).limit(limit)
         total_tasks = self.collection.count_documents({})
         return {"tasks": list(cursor), "total_tasks": total_tasks}
