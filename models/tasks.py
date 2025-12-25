@@ -30,7 +30,7 @@ class TaskResponse(TaskBase):
 
 
 class TaskListResponse(BaseModel):
-    tasks: list[TaskResponse]
+    data: list[TaskResponse]
     page: int = 1
     total_pages: int = 1
     total_tasks: int = 0

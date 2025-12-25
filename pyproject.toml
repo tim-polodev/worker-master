@@ -9,6 +9,7 @@ dependencies = [
     "pydantic[email]>=2.12.5",
     "pymongo>=4.15.5",
     "python-dotenv>=1.2.1",
+    "slowapi>=0.1.9",
     "uvicorn>=0.38.0",
 ]
 

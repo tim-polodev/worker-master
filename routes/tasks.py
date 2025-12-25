@@ -1,9 +1,11 @@
 import math
 from typing import Literal
 
-from fastapi import APIRouter, Body, Depends, Query, status
+from fastapi import APIRouter, Body, Depends, Query, Request, status
 from pymongo.database import Database
 
+from config import settings
+from config.ratelimiter import limiter
 from dependencies import get_db
 from models.tasks import TaskCreate, TaskListResponse, TaskResponse
 from services import TasksService
@@ -12,14 +14,19 @@ router = APIRouter()
 
 
 @router.post("/tasks", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
-async def create_task(task: TaskCreate = Body(...), db: Database = Depends(get_db)):
+@limiter.limit(settings.REQUEST_LIMITER)
+async def create_task(
+    request: Request, task: TaskCreate = Body(...), db: Database = Depends(get_db)
+):
     tasks_service = TasksService(db)
     new_task = tasks_service.add_task(task)
     return new_task
 
 
 @router.get("/tasks", response_model=TaskListResponse)
+@limiter.limit(settings.REQUEST_LIMITER)
 async def get_tasks(
+    request: Request,
     limit: int = Query(default=10, ge=1, description="Number of tasks to retrieve per page"),
     page: int = Query(default=1, ge=1, description="Page number"),
     sort_by: str = Query(default="created_at", description="Sorted field"),
@@ -35,7 +42,7 @@ async def get_tasks(
     total_tasks = insert_result.get("total_tasks", 0)
     total_pages = math.ceil(total_tasks / limit) if limit > 0 else 0
     return TaskListResponse(
-        tasks=insert_result.get("tasks", []),
+        data=insert_result.get("tasks", []),
         page=page,
         total_pages=total_pages,
         total_tasks=total_tasks,
