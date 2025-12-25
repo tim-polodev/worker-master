@@ -64,7 +64,7 @@ Interactive documentation (Swagger UI) can be found at `http://localhost:8000/do
   ```
 - **Response**: `201 Created`
 
-#### Get Tasks
+#### Get Task List
 
 - **URL**: `/api/v1/tasks`
 - **Method**: `GET`
@@ -92,3 +92,14 @@ To run the tests:
 ```bash
 uv run pytest
 ```
+
+### TODOS
+
+- [ ] Add authentication
+    - [ ] Hard coded API key
+    - [ ] With JWT
+- [ ] Trigger scripts that run directly on local
+- [ ] Trigger scripts that call remote APIs
+- [ ] Trigger scripts that run on a remote AWS ECS Fargate cluster
+- [ ] Add endpoint for updating tasks
+- [ ] Allow scheduled tasks
